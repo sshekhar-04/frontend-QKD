@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import './App.css'
 
 function App() {
@@ -12,14 +13,11 @@ function App() {
     e.preventDefault()
     
     try {
-      const response = await fetch(`https://qkd-simulation-v2.onrender.com/api/qkd/encrypt?message=${encodeURIComponent(message)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      const response = await axios.get('https://qkd-simulation-v2.onrender.com/api/qkd/encrypt', {
+        params: { message: message }
       })
       
-      const data = await response.json()
+      const data = response.data
       console.log('Response:', data)
       setEncryptedResult(data)
     } catch (error) {
@@ -32,15 +30,12 @@ function App() {
     e.preventDefault()
     
     try {
-      const response = await fetch('https://qkd-simulation-v2.onrender.com/api/qkd/decrypt', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ciphertext: hashMessage, encryptionKey: key })
+      const response = await axios.post('https://qkd-simulation-v2.onrender.com/api/qkd/decrypt', {
+        ciphertext: hashMessage,
+        encryptionKey: key
       })
       
-      const data = await response.json()
+      const data = response.data
       console.log('Decrypted:', data)
       setDecryptedResult(data)
     } catch (error) {
