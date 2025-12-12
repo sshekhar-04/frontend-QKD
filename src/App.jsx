@@ -12,7 +12,7 @@ function App() {
     e.preventDefault()
     
     try {
-      const response = await fetch(`http://localhost:8080/api/qkd/encrypt?message=${encodeURIComponent(message)}`, {
+      const response = await fetch(`https://qkd-simulation-v2.onrender.com/api/qkd/encrypt?message=${encodeURIComponent(message)}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -32,7 +32,7 @@ function App() {
     e.preventDefault()
     
     try {
-      const response = await fetch('http://localhost:8080/api/qkd/decrypt', {
+      const response = await fetch('https://qkd-simulation-v2.onrender.com/api/qkd/decrypt', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
