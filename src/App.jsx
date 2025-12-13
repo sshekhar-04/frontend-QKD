@@ -2,52 +2,84 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import './App.css'
 
+// Configure axios defaults
+axios.defaults.baseURL = 'https://qkd-simulation-v2.onrender.com'
+axios.defaults.headers.common['Content-Type'] = 'application/json'
+axios.defaults.headers.common['Accept'] = 'application/json'
+
 function App() {
   const [message, setMessage] = useState('')
   const [hashMessage, setHashMessage] = useState('')
   const [key, setKey] = useState('')
   const [encryptedResult, setEncryptedResult] = useState({})
   const [decryptedResult, setDecryptedResult] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleEncy = async (e) => {
     e.preventDefault()
+    setLoading(true)
+    setError('')
+    setEncryptedResult({})
     
     try {
-      const response = await axios.get('https://qkd-simulation-v2.onrender.com/api/qkd/encrypt', {
-        params: { message: message }
+      const response = await axios.get('/api/qkd/encrypt', {
+        params: { message: message },
+        withCredentials: false
       })
       
-      const data = response.data
-      console.log('Response:', data)
-      setEncryptedResult(data)
+      console.log('Response:', response.data)
+      setEncryptedResult(response.data)
     } catch (error) {
-      console.error('Error:', error)
-      setEncryptedResult('Error: ' + error.message)
+      console.error('Full Error:', error)
+      console.error('Error Response:', error.response)
+      setError(error.response?.data?.error || error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleDecy = async (e) => {
     e.preventDefault()
+    setLoading(true)
+    setError('')
+    setDecryptedResult({})
     
     try {
-      const response = await axios.post('https://qkd-simulation-v2.onrender.com/api/qkd/decrypt', {
+      const response = await axios.post('/api/qkd/decrypt', {
         ciphertext: hashMessage,
         encryptionKey: key
+      }, {
+        withCredentials: false
       })
       
-      const data = response.data
-      console.log('Decrypted:', data)
-      setDecryptedResult(data)
+      console.log('Decrypted:', response.data)
+      setDecryptedResult(response.data)
     } catch (error) {
-      console.error('Error:', error)
-      setDecryptedResult('Error: ' + error.message)
+      console.error('Full Error:', error)
+      console.error('Error Response:', error.response)
+      setError(error.response?.data?.error || error.message)
+    } finally {
+      setLoading(false)
     }
   }
-
 
   return (
     <>
       <div className='container'>
+        {error && (
+          <div style={{
+            padding: '15px',
+            backgroundColor: '#fee',
+            border: '1px solid #fcc',
+            borderRadius: '5px',
+            marginBottom: '20px',
+            color: '#c00'
+          }}>
+            ⚠️ {error}
+          </div>
+        )}
+
         <div className='encryption'>
           <div className='section-header'>
             <h2>Encryption</h2>
@@ -62,9 +94,12 @@ function App() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type your message here..."
+                required
               />
             </div>
-            <button type="submit" className='btn-submit'>Encrypt</button>
+            <button type="submit" className='btn-submit' disabled={loading}>
+              {loading ? '⏳ Encrypting...' : 'Encrypt'}
+            </button>
           </form>
           {encryptedResult.ciphertext && (
             <div className='result-box'>
@@ -94,6 +129,7 @@ function App() {
                 value={hashMessage}
                 onChange={(e) => setHashMessage(e.target.value)}
                 placeholder="Enter encrypted message..."
+                required
               />
             </div>
             <div className='form-group'>
@@ -104,9 +140,12 @@ function App() {
                 value={key}
                 onChange={(e) => setKey(e.target.value)}
                 placeholder="Enter QKD key..."
+                required
               />
             </div>
-            <button type="submit" className='btn-submit'>Decrypt</button>
+            <button type="submit" className='btn-submit' disabled={loading}>
+              {loading ? '⏳ Decrypting...' : 'Decrypt'}
+            </button>
           </form>
           {decryptedResult.plaintext && (
             <div className='result-box'>
