@@ -2,11 +2,6 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import './App.css'
 
-// Configure axios defaults
-axios.defaults.baseURL = 'https://qkd-simulation-v2.onrender.com'
-axios.defaults.headers.common['Content-Type'] = 'application/json'
-axios.defaults.headers.common['Accept'] = 'application/json'
-
 function App() {
   const [message, setMessage] = useState('')
   const [hashMessage, setHashMessage] = useState('')
@@ -23,17 +18,13 @@ function App() {
     setEncryptedResult({})
     
     try {
-      const response = await axios.get('/api/qkd/encrypt', {
-        params: { message: message },
-        withCredentials: false
+      const response = await axios.get('https://qkd-simulation-v2.onrender.com/api/qkd/encrypt', {
+        params: { message }
       })
       
-      console.log('Response:', response.data)
       setEncryptedResult(response.data)
-    } catch (error) {
-      console.error('Full Error:', error)
-      console.error('Error Response:', error.response)
-      setError(error.response?.data?.error || error.message)
+    } catch (err) {
+      setError(err.response?.data?.error || err.message)
     } finally {
       setLoading(false)
     }
@@ -46,19 +37,14 @@ function App() {
     setDecryptedResult({})
     
     try {
-      const response = await axios.post('/api/qkd/decrypt', {
+      const response = await axios.post('https://qkd-simulation-v2.onrender.com/api/qkd/decrypt', {
         ciphertext: hashMessage,
         encryptionKey: key
-      }, {
-        withCredentials: false
       })
       
-      console.log('Decrypted:', response.data)
       setDecryptedResult(response.data)
-    } catch (error) {
-      console.error('Full Error:', error)
-      console.error('Error Response:', error.response)
-      setError(error.response?.data?.error || error.message)
+    } catch (err) {
+      setError(err.response?.data?.error || err.message)
     } finally {
       setLoading(false)
     }
@@ -178,4 +164,5 @@ function App() {
     </>
   )
 }
+
 export default App
