@@ -53,19 +53,6 @@ function App() {
   return (
     <>
       <div className='container'>
-        {error && (
-          <div style={{
-            padding: '15px',
-            backgroundColor: '#fee',
-            border: '1px solid #fcc',
-            borderRadius: '5px',
-            marginBottom: '20px',
-            color: '#c00'
-          }}>
-            ⚠️ {error}
-          </div>
-        )}
-
         <div className='encryption'>
           <div className='section-header'>
             <h2>Encryption</h2>
