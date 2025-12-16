@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import axiosInstance from './api/axiosInstance'
 import './App.css'
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
     setEncryptedResult({})
     
     try {
-      const response = await axios.get('https://qkd-simulation-v2.onrender.com/api/qkd/encrypt', {
+      const response = await axiosInstance.get('/api/qkd/encrypt', {
         params: { message }
       })
       
@@ -37,7 +37,7 @@ function App() {
     setDecryptedResult({})
     
     try {
-      const response = await axios.post('https://qkd-simulation-v2.onrender.com/api/qkd/decrypt', {
+      const response = await axiosInstance.post('/api/qkd/decrypt', {
         ciphertext: hashMessage,
         encryptionKey: key
       })
