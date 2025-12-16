@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Vite automatically loads the correct VITE_API_BASE_URL based on the mode (dev or production)
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 // Create the Axios instance
 const axiosInstance = axios.create({

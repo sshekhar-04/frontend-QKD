@@ -204,7 +204,7 @@ input::placeholder {
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
-    gap: 25px;
+    gap: 50px;
     padding: 0;
   }
 
